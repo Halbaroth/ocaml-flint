@@ -139,6 +139,17 @@ module FMPZ_poly = struct
   let sub = return fmpz_poly_sub
   let mul = return fmpz_poly_mul
   let mul_scalar = return fmpz_poly_scalar_mul_fmpz
+
+  let gcd = return fmpz_poly_gcd
+
+  let is_squarefree p =
+    (* XXX: This test is probably wrong because I couldn't understand the documentation of flint...
+       We MUST fix this before merging this PR. *)
+    fmpz_poly_is_squarefree p != 0
+
+  let num_real_roots_sturm = fmpz_poly_num_real_roots_sturm
+  let num_real_roots = fmpz_poly_num_real_roots
+
   let to_string : t -> string = External.to_string
   let pp fmt f = Format.pp_print_string fmt (to_string f)
 end

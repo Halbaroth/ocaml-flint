@@ -76,10 +76,56 @@ let () =
   | None -> Format.printf "no roots@."
   | Some a -> pp "a" (Flint.CA.from_qqbar ~ctx a)
 
+let make_poly l = Flint.FMPZ_poly.create @@ Array.of_list @@ List.map Z.of_int @@ List.rev l
+
+(* Test [Flint.CA.FMPZ_poly.evaluate] *)
 let () =
-  let p = Flint.FMPZ_poly.create [| Z.of_int (-2); Z.of_int 0; Z.of_int 1 |] in
+  let p = make_poly [ 1; 0; -2 ] in
   Format.printf "%a@." Flint.FMPZ_poly.pp p;
   let z = Flint.CA.of_z ~ctx (Z.of_int 4) in
   pp "z" z;
   let w = Flint.CA.fmpz_poly_evaluate ~ctx p z in
   pp "w" w
+
+
+(* Test [Flint.FMPZ_poly.gcd] *)
+let () =
+  let p = make_poly [ 1; 0; -1 ] in
+  Format.printf "%a@." Flint.FMPZ_poly.pp p;
+  let q = make_poly [ 1; -1 ] in
+  Format.printf "%a@." Flint.FMPZ_poly.pp q;
+  let d = Flint.FMPZ_poly.gcd p q in
+  Format.printf "%a@." Flint.FMPZ_poly.pp d
+
+(* Test [Flint.FMPZ_poly.is_squarefree] *)
+let () =
+  let p = make_poly [ 1; 2; 1 ] in
+  Format.printf "%a@." Flint.FMPZ_poly.pp p;
+  let r = Flint.FMPZ_poly.is_squarefree p in
+  Format.printf "%b@." r;
+  let q = make_poly [ 1; 0; 1 ] in
+  Format.printf "%a@." Flint.FMPZ_poly.pp q;
+  let r = Flint.FMPZ_poly.is_squarefree q in
+  Format.printf "%b@." r
+
+(* Test [Flint.FMPZ_poly.num_real_roots_sturm] *)
+let () =
+  let p = make_poly [ 1; 0; 1; 0 ] in
+  Format.printf "%a@." Flint.FMPZ_poly.pp p;
+  let r = Flint.FMPZ_poly.num_real_roots_sturm p in
+  Format.printf "%d@." r;
+  let q = make_poly [ 1; 0; 1 ] in
+  Format.printf "%a@." Flint.FMPZ_poly.pp q;
+  let r = Flint.FMPZ_poly.num_real_roots_sturm q in
+  Format.printf "%d@." r
+
+(* Test [Flint.FMPZ_poly.num_real_roots] *)
+let () =
+  let p = make_poly [ 1; 0; 1; 0 ] in
+  Format.printf "%a@." Flint.FMPZ_poly.pp p;
+  let r = Flint.FMPZ_poly.num_real_roots p in
+  Format.printf "%d@." r;
+  let q = make_poly [ 1; 0; 1 ] in
+  Format.printf "%a@." Flint.FMPZ_poly.pp q;
+  let r = Flint.FMPZ_poly.num_real_roots q in
+  Format.printf "%d@." r

@@ -56,6 +56,11 @@ module FMPZ_poly : sig
   val sub : t -> t -> t
   val mul : t -> t -> t
   val mul_scalar : t -> FMPZ.t -> t
+
+  val gcd : t -> t -> t
+  val is_squarefree : t -> bool
+  val num_real_roots_sturm : t -> int
+  val num_real_roots : t -> int
 end
 
 module ARF : sig

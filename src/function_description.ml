@@ -71,6 +71,18 @@ module Functions (F : Ctypes.FOREIGN) = struct
   let fmpz_poly_set_si =
     foreign "fmpz_poly_set_si" (fmpz_poly_t @-> long @-> returning void)
 
+  let fmpz_poly_gcd =
+    foreign "fmpz_poly_gcd" (fmpz_poly_t @-> fmpz_poly_t @-> fmpz_poly_t @-> returning void)
+
+  let fmpz_poly_is_squarefree =
+    foreign "fmpz_poly_is_squarefree" (fmpz_poly_t @-> returning int)
+
+  let fmpz_poly_num_real_roots_sturm =
+    foreign "fmpz_poly_num_real_roots_sturm" (fmpz_poly_t @-> returning int)
+
+  let fmpz_poly_num_real_roots =
+    foreign "fmpz_poly_num_real_roots" (fmpz_poly_t @-> returning int)
+
   let acb_init = foreign "acb_init" (ACB.t @-> returning void)
   let acb_clear = foreign "acb_clear" (ACB.t @-> returning void)
   let mag_init = foreign "mag_init" (mag_t @-> returning void)
