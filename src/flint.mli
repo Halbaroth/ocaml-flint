@@ -144,10 +144,10 @@ end
 module CA : sig
   module CTX : sig
     type t
-  
+
     val mk : unit -> t
   end
-  
+
   type t
 
   val pp : ctx:CTX.t -> Format.formatter -> t -> unit
@@ -218,4 +218,6 @@ module CA : sig
   val pow : ctx:CTX.t -> t -> Q.t -> t
   val from_qqbar : ctx:CTX.t -> QQBAR.t -> t
   val to_qqbar : ctx:CTX.t -> t -> QQBAR.t
+
+  val fmpz_poly_evaluate : ctx:CTX.t -> FMPZ_poly.t -> t -> t
 end

@@ -75,3 +75,11 @@ let () =
   match a with
   | None -> Format.printf "no roots@."
   | Some a -> pp "a" (Flint.CA.from_qqbar ~ctx a)
+
+let () =
+  let p = Flint.FMPZ_poly.create [| Z.of_int (-2); Z.of_int 0; Z.of_int 1 |] in
+  Format.printf "%a@." Flint.FMPZ_poly.pp p;
+  let z = Flint.CA.of_z ~ctx (Z.of_int 4) in
+  pp "z" z;
+  let w = Flint.CA.fmpz_poly_evaluate ~ctx p z in
+  pp "w" w

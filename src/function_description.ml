@@ -199,6 +199,9 @@ module Functions (F : Ctypes.FOREIGN) = struct
   let ca_set_qqbar =
     foreign "ca_set_qqbar" (ca_t @-> qqbar_t @-> ca_ctx_t @-> returning void)
 
+  let ca_fmpz_poly_evaluate =
+    foreign "ca_fmpz_poly_evaluate" (ca_t @-> fmpz_poly_t @-> ca_t @-> ca_ctx_t @-> returning void)
+
   let flag_qqbar_roots =
     let cons_if i cst cst' l = if Int.logand i cst = 0 then l else cst' :: l in
     view int

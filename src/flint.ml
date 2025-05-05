@@ -479,4 +479,6 @@ module CA = struct
     assert b;
     (* only algebraic currently *)
     qqbar
+
+  let fmpz_poly_evaluate ~ctx p a = return_ca ctx (fun t -> ca_fmpz_poly_evaluate t p a ctx)
 end
