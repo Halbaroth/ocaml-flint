@@ -214,6 +214,57 @@ module Functions (F : Ctypes.FOREIGN) = struct
   let ca_fmpz_poly_evaluate =
     foreign "ca_fmpz_poly_evaluate" (ca_t @-> fmpz_poly_t @-> ca_t @-> ca_ctx_t @-> returning void)
 
+  let ca_poly_init = foreign "ca_poly_init" (ca_poly_t @-> ca_ctx_t @-> returning void)
+
+  let ca_poly_fit_length =
+    foreign "ca_poly_fit_length" (ca_poly_t @-> long @-> ca_ctx_t @-> returning void)
+
+  let ca_poly_clear =
+    foreign "ca_poly_clear" (ca_poly_t @-> ca_ctx_t @-> returning void)
+
+  let ca_poly_normalise =
+    foreign "_ca_poly_normalise" (ca_poly_t @-> ca_ctx_t @-> returning void)
+
+  let ca_poly_set_coeff_ca =
+    foreign "ca_poly_set_coeff_ca"
+      (ca_poly_t @-> long @-> ca_t @-> ca_ctx_t @-> returning void)
+
+  let ca_poly_zero = foreign "ca_poly_zero" (ca_poly_t @-> ca_ctx_t @-> returning void)
+
+  let ca_poly_one = foreign "ca_poly_one" (ca_poly_t @-> ca_ctx_t @-> returning void)
+
+  let ca_poly_x = foreign "ca_poly_x" (ca_poly_t @-> ca_ctx_t @-> returning void)
+
+  let ca_poly_add =
+    foreign "ca_poly_add" (ca_poly_t @-> ca_poly_t @-> ca_poly_t @-> ca_ctx_t @-> returning void)
+
+  let ca_poly_sub =
+    foreign "ca_poly_sub" (ca_poly_t @-> ca_poly_t @-> ca_poly_t @-> ca_ctx_t @-> returning void)
+
+  let ca_poly_mul =
+    foreign "ca_poly_mul" (ca_poly_t @-> ca_poly_t @-> ca_poly_t @-> ca_ctx_t @-> returning void)
+
+  let ca_poly_roots =
+    foreign "ca_poly_roots" (ca_vec_t @-> ptr ulong @-> ca_poly_t @-> ca_ctx_t @-> returning int)
+
+  let ca_poly_evaluate =
+    foreign "ca_poly_evaluate" (ca_t @-> ca_poly_t @-> ca_t @-> ca_ctx_t @-> returning void)
+
+  let ca_poly_check_equal =
+    foreign "ca_poly_check_equal" (ca_poly_t @-> ca_poly_t @-> ca_ctx_t @-> returning truth_t)
+
+  let ca_poly_check_is_zero =
+    foreign "ca_poly_check_is_zero" (ca_poly_t @-> ca_ctx_t @-> returning truth_t)
+
+  let ca_poly_check_is_one =
+    foreign "ca_poly_check_is_one" (ca_poly_t @-> ca_ctx_t @-> returning truth_t)
+
+  let ca_vec_init =
+    foreign "ca_vec_init" (ca_vec_t @-> long @-> ca_ctx_t @-> returning void)
+
+  let ca_vec_clear =
+    foreign "ca_vec_clear" (ca_vec_t @-> ca_ctx_t @-> returning void)
+
   let flag_qqbar_roots =
     let cons_if i cst cst' l = if Int.logand i cst = 0 then l else cst' :: l in
     view int

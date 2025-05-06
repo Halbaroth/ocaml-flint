@@ -6,6 +6,8 @@
 #include "flint/fmpz_poly.h"
 #include "flint/acb.h"
 #include "flint/ca.h"
+#include "flint/ca_vec.h"
+#include "flint/gr_poly.h"
 #include "ctypes_cstubs_internals.h"
 #include "zarith.h"
 #include <stdio.h>
@@ -55,7 +57,6 @@ value flint_stubs_utils_fmpz_poly_to_string(value vfmpz)
   free(str);
   return r;
 }
-
 
 value acb_stubs_utils_to_string(value vacb)
 {

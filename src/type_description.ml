@@ -139,6 +139,41 @@ module Types (F : Ctypes.TYPE) = struct
 
   let ca_ctx_t : ca_ctx_t typ = ptr ca_ctx_struct
 
+  module CA_poly = struct
+    type s
+    type t = s structure
+
+    let t : t typ =
+      let s = structure "ca_poly_struct_struct" in
+      typedef s "ca_poly_struct"
+
+    let coeffs = field t "coeffs" (ptr ca_struct)
+    let length = field t "length" long
+    let () = seal t
+  end
+
+  type ca_poly_t = CA_poly.t ptr
+
+  let ca_poly_t : ca_poly_t typ = ptr CA_poly.t
+
+  module CA_vec = struct
+    type s
+    type t = s structure
+
+    let t : t typ =
+      let s = structure "ca_vec_struct_struct" in
+      typedef s "ca_vec_struct"
+
+    let entries = field t "entries" (ptr ca_struct)
+    let length = field t "length" long
+
+    let () = seal t
+  end
+
+  type ca_vec_t = CA_vec.t ptr
+
+  let ca_vec_t : ca_vec_t typ = ptr CA_vec.t
+
   type truth_t = TRUE | FALSE | UNKNOWN
 
   let truth_t =

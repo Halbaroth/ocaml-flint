@@ -129,3 +129,69 @@ let () =
   Format.printf "%a@." Flint.FMPZ_poly.pp q;
   let r = Flint.FMPZ_poly.num_real_roots q in
   Format.printf "%d@." r
+
+let make_ca_poly l =
+  Flint.CA_poly.create ~ctx
+  @@ Array.of_list
+  @@ List.map (fun x -> Flint.CA.of_z ~ctx @@ Z.of_int x)
+  @@ List.rev l
+
+let pp_ca_poly = Flint.CA_poly.pp ~ctx
+
+(* Test [Flint.CA_poly.add] *)
+let () =
+  let p = make_ca_poly [ 1; 0; 1; 0 ] in
+  Format.printf "%a@." pp_ca_poly p;
+  let q = make_ca_poly [ -2; 1; 0 ] in
+  Format.printf "%a@." pp_ca_poly q;
+  let r = Flint.CA_poly.add ~ctx p q in
+  Format.printf "%a@." pp_ca_poly r
+
+(* Test [Flint.CA_poly.sub] *)
+let () =
+  let p = make_ca_poly [ 1; 0; 1; 0 ] in
+  Format.printf "%a@." pp_ca_poly p;
+  let q = make_ca_poly [ -2; 1; 0 ] in
+  Format.printf "%a@." pp_ca_poly q;
+  let r = Flint.CA_poly.sub ~ctx p q in
+  Format.printf "%a@." pp_ca_poly r
+
+(* Test [Flint.CA_poly.mul] *)
+let () =
+  let p = make_ca_poly [ 1; 0; 1; 0 ] in
+  Format.printf "%a@." pp_ca_poly p;
+  let q = make_ca_poly [ -2; 0; 1; 0 ] in
+  Format.printf "%a@." pp_ca_poly q;
+  let r = Flint.CA_poly.mul ~ctx p q in
+  Format.printf "%a@." pp_ca_poly r
+
+(* Test [Flint.CA_poly.evaluate] *)
+let () =
+  let p = make_ca_poly [ 1; -1; 1 ] in
+  Format.printf "%a@." pp_ca_poly p;
+  let a = Flint.CA.of_z ~ctx @@ Z.of_int 2 in
+  Format.printf "%a@." (Flint.CA.pp ~ctx) a;
+  let r = Flint.CA_poly.evaluate ~ctx p a in
+  Format.printf "%a@." (Flint.CA.pp ~ctx) r
+
+let pp_comma fmt () = Format.fprintf fmt ",@ "
+
+(* Test [Flint.CA_poly.roots] *)
+let () =
+  let p = make_ca_poly [ 1; 0; -1 ] in
+  Format.printf "%a@." pp_ca_poly p;
+  let r = Flint.CA_poly.roots ~ctx p |> Array.to_seq |> List.of_seq in
+  Format.printf "%a@." (Format.pp_print_list ~pp_sep:pp_comma (Flint.CA.pp ~ctx)) r;
+  let q = make_ca_poly [ 1; 0; 1 ] in
+  Format.printf "%a@." pp_ca_poly q;
+  let r = Flint.CA_poly.roots ~ctx q |> Array.to_seq |> List.of_seq in
+  Format.printf "%a@." (Format.pp_print_list ~pp_sep:pp_comma (Flint.CA.pp ~ctx)) r
+
+let () =
+  let p = make_ca_poly [ 1; 0; -2 ] in
+  Format.printf "%a@." pp_ca_poly p;
+  let r =
+    Flint.CA_poly.roots ~ctx p |> Array.to_seq |> List.of_seq
+    |> List.sort (Flint.CA.compare ~ctx)
+  in
+  Format.printf "%a@." (Format.pp_print_list ~pp_sep:pp_comma (Flint.CA.pp ~ctx)) r

@@ -26,7 +26,7 @@
      "-lgmp -lmpfr -lflint")))
   (headers
    (include "flint/fmpz.h" "flint/fmpq.h" "flint/fmpz_poly.h" "flint/acb.h"
-      "flint/ca.h" "string.h"
+      "flint/ca.h" "flint/ca_poly.h" "flint/gr_poly.h" "string.h"
    ))
   (type_description
    (instance Type)

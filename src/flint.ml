@@ -493,3 +493,132 @@ module CA = struct
 
   let fmpz_poly_evaluate ~ctx p a = return_ca ctx (fun t -> ca_fmpz_poly_evaluate t p a ctx)
 end
+
+module CA_vec = struct
+  module CI = Cstubs_internals
+
+  type t = ca_vec_t
+
+  let length (t : t) = Signed.Long.to_int @@ !@(t |-> C.Type.CA_vec.length)
+
+  let get_entry t i : CA.t =
+    assert (i < length t);
+    !@(t |-> C.Type.CA_vec.entries) +@ i
+
+  module C = struct
+    type ca_vec = C.Type.CA_vec.s
+
+    let ca_vec_struct = C.Type.CA_vec.t
+    let ca_vec_t = C.Type.ca_vec_t
+
+    let mk_ca_vec ~ctx : ca_vec_t =
+      allocate_n ~count:1 ~finalise:(fun p -> ca_vec_clear p ctx) ca_vec_struct
+  end
+
+  let make ~ctx = C.mk_ca_vec ~ctx
+
+  let to_array (t : t) : CA.t array = Array.init (length t) (get_entry t)
+end
+
+module CA_poly = struct
+  type t = ca_poly_t
+  type ca_ctx_t = CA.CTX.t
+
+  let length (t : t) = Signed.Long.to_int @@ !@(t |-> C.Type.CA_poly.length)
+
+  let get_coef t i =
+    assert (i < length t);
+    !@(t |-> C.Type.CA_poly.coeffs) +@ i
+
+  module C = struct
+    type ca_poly = C.Type.CA_poly.s
+
+    let ca_poly_struct = C.Type.CA_poly.t
+    let ca_poly_t = C.Type.ca_poly_t
+
+    let mk_ca_poly ~ctx : ca_poly_t =
+      allocate_n ~count:1 ~finalise:(fun p -> ca_poly_clear p ctx) ca_poly_struct
+  end
+
+  let return0 ~ctx f =
+    let r = C.mk_ca_poly ~ctx in
+    ca_poly_init r ctx;
+    f r ctx;
+    r
+    [@@inline always]
+
+  let return2 ~ctx f x y =
+    let r = C.mk_ca_poly ~ctx in
+    ca_poly_init r ctx;
+    f r x y ctx;
+    r
+    [@@inline always]
+
+  let mk_ca ~ctx () : CA.t =
+    allocate_n ~count:1 ~finalise:(fun x -> ca_clear x ctx) ca_struct
+
+  let return_ca ctx f =
+    let t = mk_ca ~ctx () in
+    f t;
+    t
+    [@@inline always]
+
+  let evaluate ~ctx p a = return_ca ctx (fun t -> ca_poly_evaluate t p a ctx)
+
+  let create ~ctx a =
+    let len = Array.length a in
+    let f = C.mk_ca_poly ~ctx in
+    let llen = Signed.Long.of_int len in
+    ca_poly_fit_length f llen ctx;
+    f |-> CA_poly.length <-@ llen;
+    for i = 0 to len - 1 do
+      let p = get_coef f i in
+      p <-@ !@ (a.(i))
+    done;
+    ca_poly_normalise f ctx;
+    f
+
+  let zero ~ctx = return0 ~ctx ca_poly_zero
+  let one ~ctx = return0 ~ctx ca_poly_one
+  let x ~ctx = return0 ~ctx ca_poly_x
+
+  let add ~ctx = return2 ~ctx ca_poly_add
+  let sub ~ctx = return2 ~ctx ca_poly_sub
+  let mul ~ctx = return2 ~ctx ca_poly_mul
+
+  let equal ~ctx x y =
+    match ca_poly_check_equal x y ctx with
+    | TRUE -> true
+    | FALSE -> false
+    | UNKNOWN -> failwith "equal"
+
+  let is_zero ~ctx x =
+    match ca_poly_check_is_zero x ctx with
+    | TRUE -> true
+    | FALSE -> false
+    | UNKNOWN -> failwith "is_zero"
+
+  let is_one ~ctx x =
+    match ca_poly_check_is_one x ctx with
+    | TRUE -> true
+    | FALSE -> false
+    | UNKNOWN -> failwith "is_one"
+
+  let roots ~ctx a =
+    let vec = CA_vec.make ~ctx in
+    let exp = allocate ulong (Unsigned.ULong.of_int 0) in
+    match ca_poly_roots vec exp a ctx with
+    | 1 -> CA_vec.to_array vec
+    | 0 -> failwith "roots"
+    | _ -> assert false
+
+  let pp ~ctx fmt a =
+    (* TODO: improve this printer. *)
+    let len = length a in
+    for i = 0 to len - 1 do
+      let p = get_coef a i in
+      Format.fprintf fmt "%a " (CA.pp ~ctx) p
+    done
+
+  let to_string ~ctx a = Format.asprintf "%a" (pp ~ctx) a
+end

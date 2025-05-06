@@ -226,3 +226,27 @@ module CA : sig
 
   val fmpz_poly_evaluate : ctx:CTX.t -> FMPZ_poly.t -> t -> t
 end
+
+module CA_poly : sig
+  type t
+  type ca_ctx_t = CA.CTX.t
+
+  val create : ctx:ca_ctx_t -> CA.t array -> t
+  val zero : ctx:ca_ctx_t -> t
+  val one : ctx:ca_ctx_t -> t
+  val x : ctx:ca_ctx_t -> t
+
+  val to_string : ctx:ca_ctx_t -> t -> string
+  val pp : ctx:ca_ctx_t -> Format.formatter -> t -> unit
+  val evaluate : ctx:ca_ctx_t -> t -> CA.t -> CA.t
+
+  val add : ctx:ca_ctx_t -> t -> t -> t
+  val sub : ctx:ca_ctx_t -> t -> t -> t
+  val mul : ctx:ca_ctx_t -> t -> t -> t
+
+  val equal : ctx:ca_ctx_t -> t -> t -> bool
+  val is_zero : ctx:ca_ctx_t -> t -> bool
+  val is_one : ctx:ca_ctx_t -> t -> bool
+
+  val roots : ctx:ca_ctx_t -> t -> CA.t array
+end
