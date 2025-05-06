@@ -202,6 +202,9 @@ module Functions (F : Ctypes.FOREIGN) = struct
   let ca_check_is_negative_real =
     foreign "ca_check_is_negative_real" (ca_t @-> ca_ctx_t @-> returning truth_t)
 
+  let ca_check_is_real =
+    foreign "ca_check_is_real" (ca_t @-> ca_ctx_t @-> returning truth_t)
+
   let qqbar_init = foreign "qqbar_init" (qqbar_t @-> returning void)
   let qqbar_clear = foreign "qqbar_clear" (qqbar_t @-> returning void)
 

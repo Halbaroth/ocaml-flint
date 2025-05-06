@@ -421,6 +421,7 @@ module CA = struct
   let compare_q ~ctx x y = compare ~ctx x (of_q ~ctx y)
   let sign ~ctx x = compare ~ctx x (zero ~ctx ())
   let is_negative_real ~ctx x = of_truth_exn (ca_check_is_negative_real x ctx)
+  let is_real ~ctx x = of_truth_exn (ca_check_is_real x ctx)
   let to_string ~ctx f = External.to_string f ctx
   let pp ~ctx fmt f = Format.pp_print_string fmt (to_string ~ctx f)
 

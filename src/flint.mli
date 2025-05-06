@@ -188,6 +188,9 @@ module CA : sig
   val ceil : ctx:CTX.t -> t -> Z.t
   val truncate : ctx:CTX.t -> t -> Z.t
 
+  val is_real : ctx:CTX.t -> t -> bool
+  val is_negative_real : ctx:CTX.t -> t -> bool
+
   (*
   val is_integer : t -> bool
   (** complete *)
